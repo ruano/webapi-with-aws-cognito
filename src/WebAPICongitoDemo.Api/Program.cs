@@ -1,7 +1,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using WebAPICongitoDemo.Api.Config;
 
 var builder = WebApplication.CreateBuilder(args);
+
+IConfigurationSection configurationSection = builder.Configuration.GetSection(nameof(AWSCognito));
+builder.Services.Configure<AWSCognito>(configurationSection);
+
+AWSCognito cognito = configurationSection.Get<AWSCognito>();
 
 // Add services to the container.
 
@@ -18,12 +24,17 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.Authority = builder.Configuration["Cognito:Authority"];
+    options.Authority = cognito.AuthorityUrl;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
         ValidateAudience = false
     };
+});
+
+builder.Services.AddHttpClient("CognitoToken", config =>
+{
+    config.BaseAddress = new Uri(cognito.TokenUrl);
 });
 
 var app = builder.Build();
