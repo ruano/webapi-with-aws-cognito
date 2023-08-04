@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using WebAPICongitoDemo.Api.Config;
+using WebAPICongitoDemo.Api.Infra.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +33,12 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = false
     };
 });
+
+builder.Services.AddAuthorization(
+       options => options.AddPolicy("Writer", policy => policy.Requirements.Add(new CognitoGroupAuthorizationRequirement("writer")))
+   );
+
+builder.Services.AddSingleton<IAuthorizationHandler, CognitoGroupAuthorizationHandler>();
 
 builder.Services.AddHttpClient("CognitoToken", config =>
 {
