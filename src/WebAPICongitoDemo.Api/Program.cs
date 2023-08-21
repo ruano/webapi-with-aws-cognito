@@ -27,6 +27,7 @@ builder.Services.AddAuthentication(options =>
 .AddJwtBearer(options =>
 {
     options.Authority = cognito.AuthorityUrl;
+    options.Audience = cognito.ClientId;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
@@ -35,7 +36,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization(
-       options => options.AddPolicy("Writer", policy => policy.Requirements.Add(new CognitoGroupAuthorizationRequirement("writer")))
+       options => options.AddPolicy("Managers", policy => policy.Requirements.Add(new CognitoGroupAuthorizationRequirement("Managers")))
    );
 
 builder.Services.AddSingleton<IAuthorizationHandler, CognitoGroupAuthorizationHandler>();

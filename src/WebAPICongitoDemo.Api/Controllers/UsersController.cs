@@ -15,7 +15,7 @@ namespace WebAPICongitoDemo.Api.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "Writer")]
+        [Authorize(Policy = "Managers")]
         public IActionResult Add()
         {
             return NoContent();
