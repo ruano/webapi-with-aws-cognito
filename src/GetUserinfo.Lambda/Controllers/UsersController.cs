@@ -19,6 +19,7 @@ namespace GetUserinfo.Lambda.Controllers
         public async Task<IActionResult> Get()
         {
             List<User> users = await _policiesContext.Users
+                                        .AsNoTracking()
                                         .Include(u => u.Permissions)
                                         .ToListAsync();
 
